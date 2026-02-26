@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHYSICS GOD SANDBOX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "cannon-es": "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="ui-overlay">
+        <header>
+            <div class="logo">
+                <h1>PHYSICS GOD</h1>
+                <div class="status-bar">
+                    <span id="fps-counter">FPS: 60</span>
+                    <span id="obj-count">OBJECTS: 0</span>
+                </div>
+            </div>
+
+            <div class="env-selector">
+                <select id="env-select" onchange="window.changeEnvironment(this.value)">
+                    <option value="graph">NEON GRAPH</option>
+                    <option value="moon">MOON BASE</option>
+                    <option value="field" selected>GREEN FIELD</option>
+                </select>
+            </div>
+        </header>
+
+        <div id="controls-panel">
+            <div class="control-group">
+                <h3>CREATE</h3>
+                <button onclick="window.spawnBox()">BOX [Q]</button>
+                <button onclick="window.spawnSphere()">SPHERE [E]</button>
+                <button onclick="window.spawnTower()" class="accent">TOWER [R]</button>
+                <button onclick="window.spawnBreakableBox()" style="color: cyan; border-color: cyan;">GLASS BOX
+                    [Y]</button>
+                <button onclick="window.spawnWall()" style="color: #bbb; border-color: #bbb;">WALL [U]</button>
+                <button onclick="window.toggleKinematicsMode()" id="btn-kinematics"
+                    style="color: #00ffff; border-color: #00ffff;">KINEMATICS [OFF] [K]</button>
+            </div>
+
+            <div class="control-group">
+                <h3>FORCES</h3>
+                <button onclick="window.toggleGravity()" id="grav-btn">ZERO GRAVITY [G]</button>
+                <button onclick="window.explode()" class="danger-btn">EXPLODE [SPACE]</button>
+                <button onclick="window.toggleTime()" id="time-btn">SLOW MOTION [T]</button>
+                <button onclick="window.resetWorld()" class="reset-btn">RESET WORLD [ESC]</button>
+            </div>
+
+            <div class="control-group">
+                <h3>PHYSICS</h3>
+                <div class="slider-group">
+                    <label>GRAVITY: <span id="grav-val">20</span></label>
+                    <input type="range" id="grav-slider" min="-10" max="50" value="20" step="1">
+                </div>
+                <div class="slider-group">
+                    <label>FRICTION: <span id="fric-val">0.0</span></label>
+                    <input type="range" id="fric-slider" min="0" max="1" value="0.0" step="0.05">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>TOOLS</h3>
+                <button onclick="window.selectTool('weld')" id="btn-weld">WELD [1]</button>
+                <button onclick="window.selectTool('rope')" id="btn-rope">ROPE [2]</button>
+                <div id="tool-status" style="font-size: 0.8rem; color: #888; margin-top: 5px;">Select a tool...</div>
+            </div>
+
+            <div class="control-group">
+                <h3>CONTROLS</h3>
+                <p><span>WASD</span> MOVE</p>
+                <p><span>SPACE</span> JUMP / FLY UP</p>
+                <p><span>SHIFT</span> RUN / FLY DOWN</p>
+                <p><span>F</span> TOGGLE FLY</p>
+                <p><span>C</span> CHANGE CAMERA</p>
+                <p><span>CLICK</span> LOCK MOUSE</p>
+            </div>
+        </div>
+
+        <!-- Kinematics Parameter Panel (hidden by default) -->
+        <div id="kinematics-panel">
+            <h2>KINEMATICS LAB</h2>
+            <div class="kin-mode-row">
+                <label>MODE</label>
+                <select id="kin-mode-select">
+                    <option value="linear">Uniform Linear</option>
+                    <option value="accelerated">Accelerated (SUVAT)</option>
+                    <option value="freefall">Free Fall</option>
+                    <option value="projectile">Projectile Motion</option>
+                    <option value="circular">Circular Motion</option>
+                    <option value="relative">Relative Motion</option>
+                </select>
+            </div>
+            <div id="kin-sliders"></div>
+            <div id="kin-stats" class="kin-stats"></div>
+            <div class="kin-graph-toggles">
+                <label><input type="checkbox" id="kin-graph-pos" checked> Position</label>
+                <label><input type="checkbox" id="kin-graph-vel" checked> Velocity</label>
+                <label><input type="checkbox" id="kin-graph-acc"> Acceleration</label>
+            </div>
+            <div class="kin-buttons">
+                <button id="kin-launch-btn" class="kin-launch">LAUNCH</button>
+                <button id="kin-reset-btn" class="kin-reset">RESET</button>
+                <button id="kin-cancel-btn" class="kin-cancel">CANCEL</button>
+            </div>
+        </div>
+
+        <!-- Kinematics Graphs Container -->
+        <div id="kinematics-graphs"></div>
+
+        <!-- Crosshair -->
+        <div id="crosshair"></div>
+
+    </div>
+
+    <div id="game-container"></div>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
